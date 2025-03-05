@@ -9,29 +9,34 @@ const CreatePage = () => {
     name: "",
     description: "",  
     image: "",
+    state: "",
   });
 
   const toast = useToast();
   const { createProduct } = useProductStore();
 
   const handleAddProduct = async () => {
+    console.log("Payload being sent:", newProduct); // Log the payload
     const { success, message } = await createProduct(newProduct);
-    
+  
     toast({
       title: success ? "Success" : "Error",
       description: message,
       status: success ? "success" : "error",
       isClosable: true,
     });
-
-    // ✅ Fixed incorrect function name
-    setNew({ name: "", description: "", image: "" });
+  
+    // Reset form after submission
+    if (success) {
+      setNew({ name: "", description: "", image: "", state: "" });
+    }
   };
+  
 
   return (
-    <Container maxW="container.sm">
-      <VStack>
-        <Heading as="h1" size="2xl" textAlign="center" mb={8}>
+    <Container maxW="container.sm" mt={{ base: 20, md: 24 }} > {/* ✅ Added spacing */}
+      <VStack spacing={6} align="stretch">
+        <Heading as="h1" size="2xl" textAlign="center" mb={6}>
           Create New Travel-Log
         </Heading>
         <Box
@@ -41,7 +46,7 @@ const CreatePage = () => {
           rounded="lg"
           shadow="md"
         >
-          <VStack spacing={4}>
+          <VStack spacing={5}>
             <Input
               placeholder="Place Name"
               name="name"
@@ -60,6 +65,12 @@ const CreatePage = () => {
               name="image"
               value={newProduct.image}
               onChange={(e) => setNew({ ...newProduct, image: e.target.value })}
+            />
+            <Input
+              placeholder="State of the place"
+              name="state"
+              value={newProduct.state}
+              onChange={(e) => setNew({ ...newProduct, state: e.target.value })}
             />
             <Button colorScheme="blue" onClick={handleAddProduct} w="full">
               Add Travel-Log

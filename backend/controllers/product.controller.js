@@ -1,6 +1,32 @@
 import Product from "../models/product.model.js";
 import mongoose from "mongoose";
 
+// ✅ POST - Create a new product (Protected route)
+export const createProduct = async (req, res) => {
+    const { name, description, image, state } = req.body;
+
+    console.log("Received Product Data: ", req.body); // Log the request body
+
+    if (!name || !description || !image || !state) {
+        return res.status(400).json({ success: false, message: "Please fill all fields" });
+    }
+
+    try {
+        const newProduct = new Product({
+            name,
+            description,
+            image,
+            state,
+            user: req.userId, // Attach the user ID to the product
+        });
+        await newProduct.save();
+        res.status(201).json({ success: true, data: newProduct });
+    } catch (error) {
+        console.error("Error in creating product:", error.message);
+        res.status(500).json({ success: false, message:error.message  });
+    }
+};
+// ✅ GET all products
 export const getProducts = async (req, res) => {
     try {
         const products = await Product.find({});
@@ -11,40 +37,31 @@ export const getProducts = async (req, res) => {
     }
 };
 
-export const createProduct = async (req, res) => {
-    const { name, description, image } = req.body;
+// ✅ POST - Create a new product (Protected route)
 
-    console.log("Received Product Data: ", req.body);
-
-    if (!name || !description || !image) {
-        return res.status(400).json({ success: false, message: "Please fill all fields" });
-    }
-
-    try {
-        const newProduct = new Product({ name, description, image });
-        await newProduct.save();
-        res.status(201).json({ success: true, data: newProduct });
-    } catch (error) {
-        console.error("Error in creating product:", error.message);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
-};
-
+// ✅ PUT - Update a product (Protected route)
 export const updateProduct = async (req, res) => {
     const { id } = req.params;
-    const product = req.body;
+    const { name, description, image, state } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ success: false, message: "Invalid product ID" });
     }
 
     try {
-        const updatedProduct = await Product.findByIdAndUpdate(id, product, { new: true });
+        const product = await Product.findById(id);
 
-        if (!updatedProduct) {
+        if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
+        
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { name, description, image, state },
+            { new: true }
+        );
         res.status(200).json({ success: true, data: updatedProduct });
     } catch (error) {
         console.error("Error in updating product:", error.message);
@@ -52,6 +69,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
+// ✅ DELETE - Remove a product (Protected route)
 export const deleteProduct = async (req, res) => {
     const { id } = req.params;
 
@@ -60,15 +78,62 @@ export const deleteProduct = async (req, res) => {
     }
 
     try {
-        const deletedProduct = await Product.findByIdAndDelete(id);
+        const product = await Product.findById(id);
 
-        if (!deletedProduct) {
+        if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
+        // Check if the user is the owner of the product
+        if (product.user.toString() !== req.userId) {
+            return res.status(403).json({ success: false, message: "You are not authorized to delete this product" });
+        }
+
+        await Product.findByIdAndDelete(id);
         res.status(200).json({ success: true, message: "Product deleted successfully" });
     } catch (error) {
         console.error("Error in deleting product:", error.message);
         res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+// ✅ GET - Search for products with pagination and filtering
+export const getProduct = async (req, res) => {
+    const { name, state, page = 1, limit = 10 } = req.query; // Default page 1 and limit 10
+
+    try {
+        const query = {};
+
+        // Add name filter (case-insensitive)
+        if (name) {
+            query.name = { $regex: name, $options: "i" };
+        }
+
+        // Add state filter
+        if (state) {
+            query.state = state;
+        }
+
+        const products = await Product.find(query)
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await Product.countDocuments(query);
+
+        if (products.length === 0) {
+            return res.status(404).json({ success: false, message: "No products found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: products,
+            totalPages: Math.ceil(count / limit),
+            currentPage: parseInt(page),
+            totalItems: count,
+        });
+    } catch (error) {
+        console.error("Error fetching products:", error.message);
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
