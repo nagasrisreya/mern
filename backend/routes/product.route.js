@@ -14,13 +14,13 @@ const router = express.Router();
 router.get("/", getProducts);
 
 // ✅ POST - Create a new product (Protected route)
-router.post("/", createProduct);
+router.post("/", verifyToken,createProduct);
 
 // ✅ PUT - Update a product (Protected route)
-router.put("/:id", updateProduct);
+router.put("/:id",verifyToken, updateProduct);
 
 // ✅ DELETE - Remove a product (Protected route)
-router.delete("/:id", deleteProduct);
+router.delete("/:id", verifyToken,deleteProduct);
 
 // ✅ GET - Search for products (Public route)
 router.get("/search", getProduct);

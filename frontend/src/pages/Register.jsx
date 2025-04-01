@@ -34,7 +34,6 @@ const Register = () => {
         password,
       });
 
-      // ✅ Show success message
       toast({
         title: 'Registration successful!',
         description: 'You can now log in with your credentials.',
@@ -43,12 +42,9 @@ const Register = () => {
         isClosable: true,
       });
 
-      // ✅ Redirect to login page
       navigate('/login');
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'An error occurred';
-
-      // ✅ Show error message
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
       toast({
         title: 'Registration failed',
         description: errorMessage,

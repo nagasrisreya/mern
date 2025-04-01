@@ -20,25 +20,38 @@ import {
   useToast,
   VStack,
   Spinner,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { useProductStore } from "../store/product";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const ProductCard = ({ product, searchTerm }) => {
   const [updatedProduct, setUpdatedProduct] = useState({ ...product });
   const [loading, setLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+  const cancelRef = useRef();
 
   const textColor = useColorModeValue("gray.600", "gray.200");
   const bg = useColorModeValue("white", "gray.800");
 
   const { deleteProduct, updateProduct } = useProductStore();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDeleteProduct = async (pid) => {
-    setLoading(true);
+    setIsDeleteLoading(true);
     const { success, message } = await deleteProduct(pid);
-    setLoading(false);
+    setIsDeleteLoading(false);
 
     toast({
       title: success ? "Success" : "Error",
@@ -47,6 +60,10 @@ const ProductCard = ({ product, searchTerm }) => {
       duration: 3000,
       isClosable: true,
     });
+
+    if (success) {
+      onDeleteClose();
+    }
   };
 
   const handleUpdateProduct = async (pid, updatedProduct) => {
@@ -101,11 +118,11 @@ const ProductCard = ({ product, searchTerm }) => {
             aria-label="Edit product"
           />
           <IconButton
-            icon={loading ? <Spinner size="xs" /> : <DeleteIcon />}
-            onClick={() => handleDeleteProduct(product._id)}
+            icon={isDeleteLoading ? <Spinner size="xs" /> : <DeleteIcon />}
+            onClick={onDeleteOpen}
             colorScheme="red"
             aria-label="Delete product"
-            isDisabled={loading}
+            isDisabled={isDeleteLoading}
           />
         </HStack>
       </Box>
@@ -158,6 +175,39 @@ const ProductCard = ({ product, searchTerm }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        isOpen={isDeleteOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onDeleteClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Travel Log
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to delete this travel log? This action cannot be undone.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onDeleteClose}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => handleDeleteProduct(product._id)}
+                ml={3}
+                isLoading={isDeleteLoading}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 };

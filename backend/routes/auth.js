@@ -18,6 +18,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
+// filepath: [auth.js](http://_vscodecontentref_/2)
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -32,11 +33,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+    // Use the secret key from environment variables
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: 'Login failed', error });
   }
 });
-
 export default router;
