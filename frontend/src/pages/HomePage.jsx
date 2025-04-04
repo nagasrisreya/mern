@@ -140,18 +140,20 @@ const HomePage = ({ searchTerm, setSearchTerm, selectedState, setSelectedState }
             ))}
           </SimpleGrid>
         ) : (
-          <VStack spacing={4}>
-            <Text fontSize="xl" textAlign="center" fontWeight="bold" color="gray.500">
-              {searchTerm || selectedState
-                ? `No results for "${searchTerm}" in ${selectedState || "any state"} 😢`
-                : "No Travel-logs found 😢"}
-            </Text>
-            <Link to="/create">
-              <Text color="blue.500" _hover={{ textDecoration: "underline" }}>
-                Create a Travel-log
+          <Flex w="full" justify="center">
+            <VStack spacing={4} align="center" justify="center">
+              <Text fontSize="xl" fontWeight="bold" color="gray.500" textAlign="center">
+                {searchTerm || selectedState
+                  ? `No results for "${searchTerm}" in ${selectedState || "any state"} 😢`
+                  : "No Travel-logs found 😢"}
               </Text>
-            </Link>
-          </VStack>
+              <Link to="/create">
+                <Text color="blue.500" _hover={{ textDecoration: "underline" }} textAlign="center">
+                  Create a Travel-log
+                </Text>
+              </Link>
+            </VStack>
+          </Flex>
         )}
       </VStack>
     </Container>

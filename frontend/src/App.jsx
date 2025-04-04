@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import CreatePage from "./pages/CreatePage";
 import HomePage from "./pages/HomePage";
@@ -9,32 +9,32 @@ import Navbar from "./components/Navbar";
 import { useAuthStore } from "./store/auth";
 
 /**
- * Layout Component to wrap pages with Navbar and Footer
+ * Layout Component to ensure footer stays at the bottom
  */
 const Layout = ({ children }) => {
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Flex direction="column" minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       {/* Navbar */}
       <Navbar />
 
-      {/* Main Content */}
-      <Box as="main" py={8} px={4}>
+      {/* Main Content - Expands to push footer down */}
+      <Box as="main" flex="1" py={8} px={4}>
         {children}
       </Box>
 
-      {/* Footer */}
+      {/* Footer Stays at Bottom */}
       <Box
         as="footer"
         py={4}
         bg={useColorModeValue("gray.200", "gray.700")}
-        mt={10}
+        mt="auto"
         textAlign="center"
       >
         <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
           &copy; {new Date().getFullYear()} Travel Log. All rights reserved.
         </Text>
       </Box>
-    </Box>
+    </Flex>
   );
 };
 
