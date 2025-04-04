@@ -99,14 +99,13 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-// ✅ GET - Search for products with pagination and filtering
 export const getProduct = async (req, res) => {
     const { name, state, page = 1, limit = 10 } = req.query; // Default page 1 and limit 10
 
     try {
         const query = {};
 
-        // Add name filter (case-insensitive)
+
         if (name) {
             query.name = { $regex: name, $options: "i" };
         }
