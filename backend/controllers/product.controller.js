@@ -24,7 +24,7 @@ export const createProduct = async (req, res) => {
     await newProduct.save();
     res.status(201).json({ success: true, data: newProduct });
   } catch (error) {
-    console.error("Error in creating product:", error.message);
+    console.error("Error in creating Travel Log:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -44,14 +44,14 @@ export const updateProduct = async (req, res) => {
   const { name, description, image, state } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid product ID" });
+      return res.status(400).json({ success: false, message: "Invalid Travel lOG ID" });
   }
 
   try {
       const product = await Product.findById(id);
 
       if (!product) {
-          return res.status(404).json({ success: false, message: "Product not found" });
+          return res.status(404).json({ success: false, message: "Travel lOG not found" });
       }
 
       // Check if the user is the owner of the product
@@ -68,7 +68,7 @@ export const updateProduct = async (req, res) => {
 
       res.status(200).json({ success: true, data: updatedProduct });
   } catch (error) {
-      console.error("Error in updating product:", error.message);
+      console.error("Error in updating Travel Log:", error.message);
       res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -76,26 +76,26 @@ export const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ success: false, message: "Invalid product ID" });
+    return res.status(400).json({ success: false, message: "Invalid Travel Log ID" });
   }
 
   try {
     const product = await Product.findById(id);
 
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(404).json({ success: false, message: "Travel Log not found" });
     }
 
     
     // Check if the user is the owner of the product
     if (!product.user || product.user.toString() !== req.userId) {
-      return res.status(403).json({ success: false, message: "You are not authorized to delete this product" });
+      return res.status(403).json({ success: false, message: "You are not authorized to delete this Travel Log" });
     }
 
     await Product.findByIdAndDelete(id);
-    res.status(200).json({ success: true, message: "Product deleted successfully" });
+    res.status(200).json({ success: true, message: "Travel Log deleted successfully" });
   } catch (error) {
-    console.error("Error in deleting product:", error.message);
+    console.error("Error in deleting Travel Log:", error.message);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -123,7 +123,7 @@ export const getProduct = async (req, res) => {
         const count = await Product.countDocuments(query);
 
         if (products.length === 0) {
-            return res.status(404).json({ success: false, message: "No products found" });
+            return res.status(404).json({ success: false, message: "No Travel Log found" });
         }
 
         res.status(200).json({
@@ -134,7 +134,7 @@ export const getProduct = async (req, res) => {
             totalItems: count,
         });
     } catch (error) {
-        console.error("Error fetching products:", error.message);
+        console.error("Error fetching Travel Logs:", error.message);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
