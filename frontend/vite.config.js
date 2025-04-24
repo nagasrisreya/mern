@@ -1,18 +1,9 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-// Optional: Visualizer plugin to see what's inside your bundle
-import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    visualizer({
-      filename: './dist/stats.html',
-      open: true,         // auto open in browser after build
-      gzipSize: true,
-      brotliSize: true
-    })
-  ],
+  plugins: [react()],
   server: {
     proxy: {
       '/api': {
@@ -23,6 +14,6 @@ export default defineConfig({
     }
   },
   build: {
-    chunkSizeWarningLimit: 1000 // Increase chunk size limit from 500KB to 1000KB
+    chunkSizeWarningLimit: 1000
   }
 });
