@@ -32,11 +32,11 @@ const HomePage = ({ searchTerm, setSearchTerm, selectedState, setSelectedState }
 
   const filteredProducts = products.filter((product) => {
     const matchesSearchTerm =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-
+      (product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()));
+  
     const matchesState = selectedState ? product.state === selectedState : true;
-
+  
     return matchesSearchTerm && matchesState;
   });
 
