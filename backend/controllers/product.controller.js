@@ -34,7 +34,7 @@ export const getProducts = async (req, res) => {
         const products = await Product.find({});
         res.status(200).json({ success: true, data: products });
     } catch (error) {
-        console.error("Error in getting products:", error.message);
+        console.error("Error in getting travel logs:", error.message);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
@@ -44,19 +44,19 @@ export const updateProduct = async (req, res) => {
   const { name, description, image, state } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid Travel lOG ID" });
+      return res.status(400).json({ success: false, message: "Invalid Travel log ID" });
   }
 
   try {
       const product = await Product.findById(id);
 
       if (!product) {
-          return res.status(404).json({ success: false, message: "Travel lOG not found" });
+          return res.status(404).json({ success: false, message: "Travel log not found" });
       }
 
       // Check if the user is the owner of the product
       if (!product.user || product.user.toString() !== req.userId) {
-          return res.status(403).json({ success: false, message: "You are not authorized to update this product" });
+          return res.status(403).json({ success: false, message: "You are not authorized to update this Travel log" });
       }
 
       // Update the product
