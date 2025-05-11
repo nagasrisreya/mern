@@ -41,6 +41,8 @@ const SideNavbar = ({
         </Button>
 
         {/* State Filter */}
+        
+        {/* State Filter */}
         <Box>
           <Text fontWeight="bold" mb={2}>
             Filter by State
@@ -65,6 +67,7 @@ const SideNavbar = ({
             <option value="Haryana">Haryana</option>
             <option value="Himachal Pradesh">Himachal Pradesh</option>
             <option value="Jharkhand">Jharkhand</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
             <option value="Karnataka">Karnataka</option>
             <option value="Kerala">Kerala</option>
             <option value="Madhya Pradesh">Madhya Pradesh</option>
@@ -83,9 +86,18 @@ const SideNavbar = ({
             <option value="Uttar Pradesh">Uttar Pradesh</option>
             <option value="Uttarakhand">Uttarakhand</option>
             <option value="West Bengal">West Bengal</option>
+            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Dadra and Nagar Haveli and Daman and Diu">
+              Dadra and Nagar Haveli and Daman and Diu
+            </option>
+            <option value="Delhi">Delhi</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Ladakh">Ladakh</option>
+            <option value="Lakshadweep">Lakshadweep</option>
+            <option value="Puducherry">Puducherry</option>
           </Select>
         </Box>
-
         {/* Star Filter */}
         <Box>
           <Text fontWeight="bold" mb={2}>

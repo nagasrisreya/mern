@@ -46,9 +46,9 @@ const CreatePage = () => {
   return (
     <Container maxW="container.sm" mt={{ base: 20, md: 24 }}>
       <VStack spacing={6} align="stretch">
-        <Heading as="h1" size="2xl" textAlign="center" mb={6}>
-          Create New Travel-Log
-        </Heading>
+        <Heading as="h1" size="2xl" textAlign="center" mb={6} mt={10}>
+  Create New Travel-Log
+</Heading>
         <Box
           w="full"
           bg={useColorModeValue("white", "gray.800")}
