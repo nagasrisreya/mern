@@ -47,7 +47,7 @@ const HomePage = ({ searchTerm, setSearchTerm, selectedState, setSelectedState }
   const placeholderColor = useColorModeValue("gray.500", "gray.300");
 
   return (
-    <Container maxW="container.xl" py={12}>
+    <Container maxW="container.xl" py={20} mt="50px">
       <VStack spacing={8} align="start">
         {/* Search & Filter in the Top Left */}
         <Flex justify="flex-start" w="full">

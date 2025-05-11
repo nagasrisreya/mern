@@ -31,7 +31,7 @@ export const useProductStore = create((set) => ({
 
       const data = await res.json();
       set((state) => ({ products: [...state.products, data.data] }));
-      return { success: true, message: "Product created successfully" };
+      return { success: true, message: "travel log created successfully" };
     } catch (error) {
       console.error("Error during fetch:", error);
       return { success: false, message: error.message };
@@ -64,7 +64,7 @@ export const useProductStore = create((set) => ({
 
         if (!res.ok) {
             const errorData = await res.json();
-            throw new Error(errorData.message || "Failed to delete product");
+            throw new Error(errorData.message || "Failed to delete travel log");
         }
 
         const data = await res.json();
@@ -74,7 +74,7 @@ export const useProductStore = create((set) => ({
 
         return { success: true, message: data.message };
     } catch (error) {
-        console.error("Error deleting product:", error.message);
+        console.error("Error deleting travel log:", error.message);
         return { success: false, message: error.message };
     }
   },
