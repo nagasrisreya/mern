@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 // ✅ POST - Create a new product (Protected route)
 export const createProduct = async (req, res) => {
-  const { name, description, image, state } = req.body;
+  const { name, description, image, state, rating } = req.body;
 
   if (!name || !description || !image || !state) {
     return res.status(400).json({ success: false, message: "Please fill all fields" });
@@ -19,7 +19,8 @@ export const createProduct = async (req, res) => {
       description,
       image,
       state,
-      user: req.userId, // Attach the user ID to the product
+      rating: rating || 0, // Default to 0 if no rating is provided
+      user: req.userId,
     });
     await newProduct.save();
     res.status(201).json({ success: true, data: newProduct });
@@ -28,6 +29,7 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 // ✅ GET all products
 export const getProducts = async (req, res) => {
     try {
@@ -41,35 +43,33 @@ export const getProducts = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, description, image, state } = req.body;
+  const { name, description, image, state, rating } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid Travel log ID" });
+    return res.status(400).json({ success: false, message: "Invalid Travel Log ID" });
   }
 
   try {
-      const product = await Product.findById(id);
+    const product = await Product.findById(id);
 
-      if (!product) {
-          return res.status(404).json({ success: false, message: "Travel log not found" });
-      }
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Travel Log not found" });
+    }
 
-      // Check if the user is the owner of the product
-      if (!product.user || product.user.toString() !== req.userId) {
-          return res.status(403).json({ success: false, message: "You are not authorized to update this Travel log" });
-      }
+    if (!product.user || product.user.toString() !== req.userId) {
+      return res.status(403).json({ success: false, message: "You are not authorized to update this Travel Log" });
+    }
 
-      // Update the product
-      const updatedProduct = await Product.findByIdAndUpdate(
-          id,
-          { name, description, image, state },
-          { new: true } // Return the updated document
-      );
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { name, description, image, state, rating }, // Include rating
+      { new: true }
+    );
 
-      res.status(200).json({ success: true, data: updatedProduct });
+    res.status(200).json({ success: true, data: updatedProduct });
   } catch (error) {
-      console.error("Error in updating Travel Log:", error.message);
-      res.status(500).json({ success: false, message: "Server error" });
+    console.error("Error in updating Travel Log:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 export const deleteProduct = async (req, res) => {

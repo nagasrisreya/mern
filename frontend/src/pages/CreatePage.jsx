@@ -1,40 +1,50 @@
 import { useState } from "react";
 import { 
-  Box, Container, VStack, Heading, Input, Button, useColorModeValue, useToast 
+  Box, Container, VStack, Heading, Input, Button, useColorModeValue, useToast, HStack, Text 
 } from "@chakra-ui/react";
+import { FaStar } from "react-icons/fa"; // Import star icons
 import { useProductStore } from "../store/product.js";
 
 const CreatePage = () => {
   const [newProduct, setNew] = useState({
     name: "",
-    description: "",  
+    description: "",
     image: "",
     state: "",
+    rating: 0, // Add rating field
   });
 
   const toast = useToast();
   const { createProduct } = useProductStore();
 
   const handleAddProduct = async () => {
-    console.log("Payload being sent:", newProduct); // Log the payload
+    if (!newProduct.name || !newProduct.description || !newProduct.image || !newProduct.state) {
+      toast({
+        title: "Error",
+        description: "All fields are required!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const { success, message } = await createProduct(newProduct);
-  
+
     toast({
       title: success ? "Success" : "Error",
       description: message,
       status: success ? "success" : "error",
       isClosable: true,
     });
-  
-    // Reset form after submission
+
     if (success) {
-      setNew({ name: "", description: "", image: "", state: "" });
+      setNew({ name: "", description: "", image: "", state: "", rating: 0 });
     }
   };
-  
 
   return (
-    <Container maxW="container.sm" mt={{ base: 20, md: 24 }} > {/* ✅ Added spacing */}
+    <Container maxW="container.sm" mt={{ base: 20, md: 24 }}>
       <VStack spacing={6} align="stretch">
         <Heading as="h1" size="2xl" textAlign="center" mb={6}>
           Create New Travel-Log
@@ -54,9 +64,8 @@ const CreatePage = () => {
               onChange={(e) => setNew({ ...newProduct, name: e.target.value })}
             />
             <Input
-              placeholder="Description"  
+              placeholder="Description"
               name="description"
-              type='string'
               value={newProduct.description}
               onChange={(e) => setNew({ ...newProduct, description: e.target.value })}
             />
@@ -72,6 +81,21 @@ const CreatePage = () => {
               value={newProduct.state}
               onChange={(e) => setNew({ ...newProduct, state: e.target.value })}
             />
+            <HStack>
+              <Text>RATING (how much do you rate this place out of 5) </Text>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Box
+                  key={star}
+                  as="button"
+                  onClick={() => setNew({ ...newProduct, rating: star })}
+                >
+                  <FaStar
+                    size={20}
+                    color={star <= newProduct.rating ? "gold" : "gray"}
+                  />
+                </Box>
+              ))}
+            </HStack>
             <Button colorScheme="blue" onClick={handleAddProduct} w="full">
               Add Travel-Log
             </Button>

@@ -30,7 +30,9 @@ import {
   TagLabel,
   Wrap,
   WrapItem,
+  Flex,
 } from "@chakra-ui/react";
+import { FaStar } from "react-icons/fa"; // Import star icons
 import { useProductStore } from "../store/product";
 import { useState, useRef } from "react";
 
@@ -95,6 +97,7 @@ const ProductCard = ({ product, searchTerm }) => {
       isClosable: true,
     });
   };
+
   const handleFetchDetails = async () => {
     if (!currentLocation) {
       toast({
@@ -106,7 +109,7 @@ const ProductCard = ({ product, searchTerm }) => {
       });
       return;
     }
-  
+
     try {
       const response = await fetch(`/api/v1/location/distance`, {
         method: "POST",
@@ -118,16 +121,14 @@ const ProductCard = ({ product, searchTerm }) => {
           to: product.name,
         }),
       });
-  
+
       const data = await response.json();
-  
-      console.log("API Response:", data); // Log the API response
-      console.log("Places to visit:", data.placesToVisit); // Log the current location
+
       if (data.success) {
         setDistance(data.distance);
         setTime(data.time);
         setTransportOptions(data.transportOptions || []);
-        setPlacesToVisit(data.placesToVisit || ["kkkk"]);
+        setPlacesToVisit(data.placesToVisit || []);
       } else {
         toast({
           title: "Error",
@@ -167,8 +168,29 @@ const ProductCard = ({ product, searchTerm }) => {
       bg={bg}
       cursor="pointer"
       onClick={onTravelOpen}
+      position="relative"
     >
-      <Image src={product.image} alt={product.name} h={48} w="full" objectFit="cover" />
+      {/* Image with Rating Stars */}
+      <Box position="relative">
+        <Image src={product.image} alt={product.name} h={48} w="full" objectFit="cover" />
+        <HStack
+          position="absolute"
+          top={2}
+          right={2}
+          spacing={1}
+          px={2}
+          py={1}
+          borderRadius="md"
+        >
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              size={25}
+              color={star <= product.rating ? "gold" : "gray"}
+            />
+          ))}
+        </HStack>
+      </Box>
 
       <Box p={4}>
         <Heading as="h3" size="md" mb={2}>
@@ -230,18 +252,39 @@ const ProductCard = ({ product, searchTerm }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={() => handleUpdateProduct(product._id, updatedProduct)}
-              isLoading={loading}
-            >
-              Update
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
+  {/* Stars with "Rating:" label */}
+  <VStack align="start" spacing={4} w="full">
+    <HStack>
+      <Text fontWeight="bold" mr={2}>Rating:</Text> {/* Add "Rating:" text */}
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Box
+          key={star}
+          as="button"
+          onClick={() => setUpdatedProduct({ ...updatedProduct, rating: star })}
+        >
+          <FaStar
+            size={20} // Adjust the size of the stars
+            color={star <= updatedProduct.rating ? "gold" : "gray"}
+          />
+        </Box>
+      ))}
+    </HStack>
+
+    {/* Update and Cancel buttons */}
+    <HStack spacing={3}>
+      <Button
+        colorScheme="blue"
+        onClick={() => handleUpdateProduct(product._id, updatedProduct)}
+        isLoading={loading}
+      >
+        Update
+      </Button>
+      <Button variant="ghost" onClick={onClose}>
+        Cancel
+      </Button>
+    </HStack>
+  </VStack>
+</ModalFooter>
         </ModalContent>
       </Modal>
 
@@ -321,21 +364,21 @@ const ProductCard = ({ product, searchTerm }) => {
               </Box>
             )}
             {Array.isArray(placesToVisit) && placesToVisit.length > 0 && (
-  <Box mt={4}>
-    <Text fontWeight="bold" mb={2}>
-      Top Places to Visit:
-    </Text>
-    <Wrap>
-      {placesToVisit.map((place, index) => (
-        <WrapItem key={index}>
-          <Tag size="md" colorScheme="green" variant="subtle">
-            <TagLabel>{place}</TagLabel>
-          </Tag>
-        </WrapItem>
-      ))}
-    </Wrap>
-  </Box>
-)}
+              <Box mt={4}>
+                <Text fontWeight="bold" mb={2}>
+                  Top Places to Visit:
+                </Text>
+                <Wrap>
+                  {placesToVisit.map((place, index) => (
+                    <WrapItem key={index}>
+                      <Tag size="md" colorScheme="green" variant="subtle">
+                        <TagLabel>{place}</TagLabel>
+                      </Tag>
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </Box>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onTravelClose}>
