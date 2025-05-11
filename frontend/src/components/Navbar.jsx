@@ -6,6 +6,11 @@ import {
   Button,
   useColorMode,
   useColorModeValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Avatar,
 } from "@chakra-ui/react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
@@ -63,12 +68,27 @@ const Navbar = () => {
             <Button onClick={toggleColorMode} aria-label="Toggle color mode">
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
             </Button>
-            {/* Login / Logout */}
-            {user ? (
-              <Button onClick={handleLogout} colorScheme="red">
-                Logout
-              </Button>
-            ) : (
+            {/* Profile Menu */}
+            {user && (
+              <Menu>
+                <MenuButton as={Button} rounded="full" variant="link" cursor="pointer">
+                  <Avatar size="md" name={user.email} /> {/* Increased size to "md" */}
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>
+                    <Button
+                      colorScheme="red"
+                      w="full"
+                      onClick={handleLogout}
+                      aria-label="Logout"
+                    >
+                      Logout
+                    </Button>
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
+            {!user && (
               <Link to="/login">
                 <Button colorScheme="blue">Login</Button>
               </Link>

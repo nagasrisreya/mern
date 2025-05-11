@@ -31,6 +31,7 @@ import {
   Wrap,
   WrapItem,
   Flex,
+  Tooltip,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa"; // Import star icons
 import { useProductStore } from "../store/product";
@@ -192,6 +193,27 @@ const ProductCard = ({ product, searchTerm }) => {
         </HStack>
       </Box>
 
+      {/* Profile Circle */}
+      {/* Profile Circle */}
+      <Tooltip label={product.user?.username || "Unknown User"} aria-label="User Tooltip">
+        <Box
+          position="absolute"
+          bottom={2}
+          right={2} /* Move the circle to the bottom-right corner */
+          w={10}
+          h={10}
+          bg="gray.200"
+          borderRadius="full"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          boxShadow="md"
+        >
+          <Text fontWeight="bold" color="gray.700">
+            {product.user?.username?.[0]?.toUpperCase() || "U"}
+          </Text>
+        </Box>
+      </Tooltip>
       <Box p={4}>
         <Heading as="h3" size="md" mb={2}>
           {product.name}
@@ -252,39 +274,39 @@ const ProductCard = ({ product, searchTerm }) => {
           </ModalBody>
 
           <ModalFooter>
-  {/* Stars with "Rating:" label */}
-  <VStack align="start" spacing={4} w="full">
-    <HStack>
-      <Text fontWeight="bold" mr={2}>Rating:</Text> {/* Add "Rating:" text */}
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Box
-          key={star}
-          as="button"
-          onClick={() => setUpdatedProduct({ ...updatedProduct, rating: star })}
-        >
-          <FaStar
-            size={20} // Adjust the size of the stars
-            color={star <= updatedProduct.rating ? "gold" : "gray"}
-          />
-        </Box>
-      ))}
-    </HStack>
+            <VStack align="start" spacing={4} w="full">
+              <HStack>
+                <Text fontWeight="bold" mr={2}>
+                  Rating:
+                </Text>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Box
+                    key={star}
+                    as="button"
+                    onClick={() => setUpdatedProduct({ ...updatedProduct, rating: star })}
+                  >
+                    <FaStar
+                      size={20}
+                      color={star <= updatedProduct.rating ? "gold" : "gray"}
+                    />
+                  </Box>
+                ))}
+              </HStack>
 
-    {/* Update and Cancel buttons */}
-    <HStack spacing={3}>
-      <Button
-        colorScheme="blue"
-        onClick={() => handleUpdateProduct(product._id, updatedProduct)}
-        isLoading={loading}
-      >
-        Update
-      </Button>
-      <Button variant="ghost" onClick={onClose}>
-        Cancel
-      </Button>
-    </HStack>
-  </VStack>
-</ModalFooter>
+              <HStack spacing={3}>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => handleUpdateProduct(product._id, updatedProduct)}
+                  isLoading={loading}
+                >
+                  Update
+                </Button>
+                <Button variant="ghost" onClick={onClose}>
+                  Cancel
+                </Button>
+              </HStack>
+            </VStack>
+          </ModalFooter>
         </ModalContent>
       </Modal>
 

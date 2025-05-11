@@ -32,13 +32,13 @@ export const createProduct = async (req, res) => {
 
 // ✅ GET all products
 export const getProducts = async (req, res) => {
-    try {
-        const products = await Product.find({});
-        res.status(200).json({ success: true, data: products });
-    } catch (error) {
-        console.error("Error in getting travel logs:", error.message);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
+  try {
+    const products = await Product.find({}).populate("user", "username email"); // Populate user details
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    console.error("Error in getting travel logs:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
 export const updateProduct = async (req, res) => {
