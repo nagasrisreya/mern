@@ -5,8 +5,8 @@ import { connectDB } from './config/db.js';
 
 import productRoute from './routes/product.route.js';
 import authRoute from './routes/auth.js';
-import locationRoute from './routes/locationRoutes.js'; // 🆕 Location route
-
+import locationRoute from './routes/locationRoutes.js';
+import chatbotRoute from './routes/chatbot.route.js'; // ✅ Import chatbot route
 dotenv.config(); // Load environment variables from .env
 
 const app = express();
@@ -21,7 +21,8 @@ connectDB();
 // API Routes
 app.use('/api/products', productRoute);
 app.use('/api/auth', authRoute);
-app.use('/api/v1/location', locationRoute); // ✅ New route for handling location and distance
+app.use('/api/v1/location', locationRoute);
+app.use('/api/chat', chatbotRoute); // ✅ Add chatbot route
 
 const PORT = process.env.PORT || 5000;
 
