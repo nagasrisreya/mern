@@ -35,7 +35,7 @@ const ChatBot = () => {
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isOpen, setIsOpen] = useState(true); // Controls whether the chat is open or closed
+  const [isOpen, setIsOpen] = useState(false); // Controls whether the chat is open or closed
   const messagesEndRef = useRef(null);
   const toast = useToast();
 
@@ -108,22 +108,37 @@ const ChatBot = () => {
   const handleClose = () => {
     setIsOpen(false);
   };
-
-  if (!isOpen) {
-    return (
-      <Box position="fixed" bottom="4" right="4">
-        <Button 
-          leftIcon={<FiMessageSquare />} 
-          colorScheme="blue" 
-          onClick={() => setIsOpen(true)}
-          boxShadow="lg"
-        >
-          travel bot
-        </Button>
-      </Box>
-    );
-  }
-
+// ...existing code...
+if (!isOpen) {
+  return (
+    <Box position="fixed" bottom="150" right="30" zIndex={50}>
+      <Button
+        onClick={() => setIsOpen(true)}
+        borderRadius="full"
+        p={0}
+        minW={0}
+        w="64px"
+        h="64px"
+        bgGradient="linear(to-br, blue.400, cyan.400)"
+        boxShadow="2xl"
+        _hover={{
+          transform: "scale(1.08) rotate(-6deg)",
+          boxShadow: "0 8px 32px 0 rgba(0, 128, 255, 0.25)",
+          bgGradient: "linear(to-br, blue.500, cyan.500)",
+        }}
+        transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text fontSize="4xl" as="span" mr={0}>
+          🤖
+        </Text>
+      </Button>
+    </Box>
+  );
+}
+// ...existing code...
   return (
     <Box
       position="fixed"
